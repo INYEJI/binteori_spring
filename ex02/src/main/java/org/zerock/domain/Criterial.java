@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 public class Criterial {
 	
-	private int pageNum;
+	private int pageNum; 
 	private int amount;
 	
 	public Criterial() {
