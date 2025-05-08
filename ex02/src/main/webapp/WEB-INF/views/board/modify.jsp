@@ -20,6 +20,8 @@
             <!-- /.panel-heading -->
             <div class="panel-body">
             	<form role="form" action="/board/modify" method="post">
+            	<input type='hidden' name='pageNum' value="<c:out value="${cri.pageNum }"/>">
+            	<input type='hidden' name='amount' value="<c:out value="${cri.amount }"/>">
                 	<div class="form-group">
                 		<label>Bno</label><input class="form-control" name="bno" 
                 				value="<c:out value='${board.bno}' />" readonly="readonly" >
@@ -53,20 +55,28 @@
 </div>
 <!-- /.row -->
 
-<script>
+<script type="text/javascript">
 	$(document).ready(function(){
 		let formObj = $("form");
 		
 		$("button").on("click", function(e){
+			
 			e.preventDefault(); //  이벤트의 기본 동작을 막는 역할
 			
 			let operation = $(this).data("oper"); 
+			
+			console.log(operation);
 				
 			if(operation === 'remove'){
 				formObj.attr("action", "/board/remove")
 			}else if(operation === 'list'){
 				formObj.attr("action", "/board/list").attr("method","get");
+				var pageNumTag = $("input[name = 'pageNum']").clone();
+				var amountTag = $("input[name = 'amount']").clone();
+				
 				formObj.empty();
+				formObj.append(pageNumTag);
+				formObj.append(amountTag);
 			}
 			formObj.submit();
 		});

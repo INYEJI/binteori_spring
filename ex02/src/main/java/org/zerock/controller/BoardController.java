@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,65 +23,57 @@ import lombok.extern.log4j.Log4j;
 @RequiredArgsConstructor
 @Log4j
 public class BoardController {
-	private final BoardService service;
-	
-	@GetMapping("/list")
-	public void list(Criterial cri, Model model) {
-		log.info("list.........." + cri);
-		List<BoardVO> list = service.getList(cri);
-		model.addAttribute("list", list);
-		
-		model.addAttribute("pageMaker", new PageDTO(cri,272));
-		
-	}
-	
-	@GetMapping("/register")
-	public void  register() {		
-	}
-	
-	@PostMapping("/register")
-	public String register(BoardVO board, RedirectAttributes rttr) {
-		log.info("register.......");
-		service.register(board);
-		
-		rttr.addFlashAttribute("result", board.getBno());
-		
-		return "redirect:/board/list";
-	}
-	
-	@GetMapping({"/get", "/modify"})
-	public void get(@RequestParam Long bno, Model model) {
-		log.info("get...modify.......");
-		
-		model.addAttribute("board", service.get(bno));		
-	}
-	
-	@PostMapping("/remove")
-	public String remove(Long bno, RedirectAttributes rttr) {
-		log.info("remove......");
-		
-		service.remove(bno);
-		rttr.addFlashAttribute("result", "삭제 성공했습니다.");
-		
-		return "redirect:/board/list";
-	}
-	
-	@PostMapping("/modify")
-	public String modify(BoardVO board, RedirectAttributes rttr) {
-		log.info("modify.........");
-		service.modify(board);
-		rttr.addFlashAttribute("result", "수정 성공했습니다.");
-		return "redirect:/board/list";
-	}
+
+    private final BoardService service;
+
+    @GetMapping("/list")
+    public void list(Criterial cri, Model model) {
+        log.info("list : " + cri);
+        List<BoardVO> list = service.getList(cri);
+        int total = service.getTotal(cri);
+
+        log.info("total: " + total);
+
+        model.addAttribute("list", list);
+        model.addAttribute("pageMaker", new PageDTO(cri, total));
+    }
+
+    @GetMapping("/register")
+    public void register() {}
+
+    @PostMapping("/register")
+    public String register(BoardVO board, RedirectAttributes rttr) {
+        log.info("register.......");
+        service.register(board);
+        rttr.addFlashAttribute("result", board.getBno());
+        return "redirect:/board/list";
+    }
+
+    @GetMapping({"/get", "/modify"})
+    public void get(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criterial cri, Model model) {
+        log.info("/get or modify");
+        model.addAttribute("board", service.get(bno));
+    }
+
+    @PostMapping("/modify")
+    public String modify(BoardVO board, @ModelAttribute("cri") Criterial cri, RedirectAttributes rttr) {
+        log.info("modify: " + board);
+        if (service.modify(board)) {
+            rttr.addFlashAttribute("result", "success");
+        }
+        rttr.addAttribute("pageNum", cri.getPageNum());
+        rttr.addAttribute("amount", cri.getAmount());
+        return "redirect:/board/list";
+    }
+
+    @PostMapping("/remove")
+    public String remove(@RequestParam("bno") Long bno, @ModelAttribute("cri") Criterial cri, RedirectAttributes rttr) {
+        log.info("remove..." + bno);
+        if (service.remove(bno)) {
+            rttr.addFlashAttribute("result", "success");
+        }
+        rttr.addAttribute("pageNum", cri.getPageNum());
+        rttr.addAttribute("amount", cri.getAmount());
+        return "redirect:/board/list";
+    }
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -9,8 +9,11 @@ import lombok.ToString;
 @ToString
 public class Criterial {
 	
-	private int pageNum; 
-	private int amount;
+	private int pageNum; //페이지 
+	private int amount; //페이지개수
+	
+	private String type; //검색 조건, 제목, 내용, 작성자
+	private String keyword;
 	
 	public Criterial() {
 		this(1,10);
@@ -21,4 +24,7 @@ public class Criterial {
 		this.amount = amount;
 	}
 
+	public String[] getTypeArr() {
+		return type == null ? new String[] {} : type.split("");
+	}
 }

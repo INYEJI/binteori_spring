@@ -23,7 +23,7 @@ public class PageDTO {
 		this.endPage = (int)(Math.ceil(cri.getPageNum()/10.0)*10);
 		this.startPage = this.endPage - 9;
 		
-		//마지막 페이지
+		//전체 페이지 목록에서 마지막 페이지
 		int realEnd = (int)(Math.ceil((total*1.0)/cri.getAmount()));
 		if(realEnd < this.endPage) {
 			this.endPage = realEnd;
