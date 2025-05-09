@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,12 +124,19 @@ public class BoardMapperTests {
 		
 	}
 	
-	
+	@Test
+	public void testTotalCount() {
+		Criterial cri = new Criterial();
+		
+		cri.setKeyword("수정");
+		cri.setType("TW");
+		
+		log.info("total count : ");
+		log.info(mapper.getTotalCount(cri));
+		
+		
+	}
 	
 	
 
 }
-	
-	
-
-
